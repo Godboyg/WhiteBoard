@@ -4,18 +4,32 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 const app = express();
 const PORT = 4000;
+const allowedOrigins = [
+    "http://localhost:3000",
+    /\.vercel\.app$/,
+    "https://white-board-client-eta.vercel.app"
+];
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Allow-Control-Allow-Headers", "Origin , X-Requested-With, Content-Type, Accept");
     next();
 });
 app.use(cors({
-    origin: "https://white-board-client-ehhw8lv8w-godboygs-projects.vercel.app"
+    origin: "https://white-board-client-eta.vercel.app"
 }));
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://white-board-client-ehhw8lv8w-godboygs-projects.vercel.app",
+        origin: (origin, callback) => {
+            if (!origin)
+                return callback(null, true);
+            if (allowedOrigins.some((o) => o instanceof RegExp ? o.test(origin) : o === origin)) {
+                callback(null, true);
+            }
+            else {
+                callback(new Error("Not allowed by CORS: " + origin));
+            }
+        },
         methods: ["POST", "GET"]
     }
 });
