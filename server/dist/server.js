@@ -4,6 +4,11 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 const app = express();
 const PORT = 4000;
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Allow-Control-Allow-Headers", "Origin , X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.use(cors({
     origin: "https://white-board-client-ehhw8lv8w-godboygs-projects.vercel.app"
 }));
