@@ -20,4 +20,4 @@ RUN npx tsc
 EXPOSE 4000
 
 # Start the app
-CMD ["node", "dist/server.js"]
+CMD ["node", "server.js"]
