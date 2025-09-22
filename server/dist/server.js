@@ -5,12 +5,12 @@ import { Server } from "socket.io";
 const app = express();
 const PORT = 4000;
 app.use(cors({
-    origin: "https://white-board-client-4cqa546mb-godboygs-projects.vercel.app"
+    origin: "https://white-board-client-ehhw8lv8w-godboygs-projects.vercel.app"
 }));
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://white-board-client-4cqa546mb-godboygs-projects.vercel.app",
+        origin: "https://white-board-client-ehhw8lv8w-godboygs-projects.vercel.app",
         methods: ["POST", "GET"]
     }
 });
