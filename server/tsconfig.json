@@ -1,22 +1,13 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    "target": "ES6",                   // Modern JavaScript target
-    "module": "commonjs",              // Node.js module system
-    "strict": true,                    // Enable all strict type-checking options
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    // "skipLibCheck": true,              // Skip checking node_modules types
-    "outDir": ".",                  // Compiled JS output folder
-    "rootDir": ".",                  // Source TS folder
-    "moduleResolution": "node" 
     // File Layout
-    // "rootDir": "./server",
-    // "outDir": "./dist",
+    "rootDir": ".",
+    "outDir": "./dist",
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    // "module": "nodenext",
-    // "target": "esnext",
+    "module": "nodenext",
+    "target": "esnext",
     // "types": [],
     // "types": ["node", "express"],
     // For nodejs:
@@ -25,13 +16,13 @@
     // and npm install -D @types/node
 
     // Other Outputs
-    // "sourceMap": true,
-    // "declaration": true,
-    // "declarationMap": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
 
     // Stricter Typechecking Options
-    // "noUncheckedIndexedAccess": true,
-    // "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
 
     // Style Options
     // "noImplicitReturns": true,
@@ -42,13 +33,12 @@
     // "noPropertyAccessFromIndexSignature": true,
 
     // Recommended Options
-    // "strict": true,
-    // "jsx": "react-jsx",
-    // "verbatimModuleSyntax": true,
-    // "isolatedModules": true,
-    // "noUncheckedSideEffectImports": true,
-    // "moduleDetection": "force",
-    // "skipLibCheck": true,
-  },
-  "include": ["*.ts"],
+    "strict": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+  }
 }
