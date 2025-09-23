@@ -19,6 +19,7 @@ app.use((req, res, next) => {
 app.use(cors({
     origin: "https://white-board-client-eta.vercel.app"
 }));
+var sessions = {};
 if (cluster.isPrimary) {
     const numCPUs = cpus().length;
     for (let i = 0; i < numCPUs; i++)
@@ -47,7 +48,6 @@ else {
             methods: ["POST", "GET"]
         }
     });
-    var sessions = {};
     io.on("connection", (socket) => {
         console.log("socket connected", socket.id);
         socket.on("join-session", (newData) => {
