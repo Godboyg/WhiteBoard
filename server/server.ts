@@ -27,6 +27,8 @@ app.use(cors({
     origin: "https://white-board-client-eta.vercel.app"
 }));
 
+var sessions: Record<string , { members: string[]}> = {}
+
 if(cluster.isPrimary){
     const numCPUs = cpus().length;
     for(let i=0 ; i < numCPUs ; i++) cluster.fork();
@@ -55,8 +57,6 @@ if(cluster.isPrimary){
               methods: ["POST" , "GET"]
           }
       });
-
-      var sessions: Record<string , { members: string[]}> = {}
 
       io.on("connection",(socket) => {
           console.log("socket connected",socket.id);
