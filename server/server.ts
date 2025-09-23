@@ -28,19 +28,8 @@ app.use(cors({
 }));
 
 var sessions: Record<string , { members: string[]}> = {}
-
-if(cluster.isPrimary){
-    const numCPUs = cpus().length;
-    for(let i=0 ; i < numCPUs ; i++) cluster.fork();
-    console.log(`Primary ${process.pid} is running, forking ${numCPUs} workers...`);
-    cluster.on("exit", (worker) => {
-     console.log(`Worker ${worker.process.pid} died, starting new one...`);
-     cluster.fork();
-    });
-} else {
-    const server = createServer(app);
-      const io = new Server(server , {
-          perMessageDeflate : false,
+const server = createServer(app);
+const io = new Server(server , {
           cors : {
               origin: (origin, callback) => {
             if (!origin) return callback(null, true);
@@ -56,13 +45,23 @@ if(cluster.isPrimary){
           },
               methods: ["POST" , "GET"]
           }
-      });
+});
+
+if(cluster.isPrimary){
+    const numCPUs = cpus().length;
+    for(let i=0 ; i < numCPUs ; i++) cluster.fork();
+    console.log(`Primary ${process.pid} is running, forking ${numCPUs} workers...`);
+    cluster.on("exit", (worker) => {
+     console.log(`Worker ${worker.process.pid} died, starting new one...`);
+     cluster.fork();
+    });
+} else {
 
       io.on("connection",(socket) => {
           console.log("socket connected",socket.id);
 
           socket.on("join-session" , (newData : any) => {
-            console.log("new dtat", newData);
+            console.log("new user data",newData);
               if(!sessions[newData.roomId] || sessions[newData.roomId]?.members.length === 0){
                   sessions[newData.roomId] = { members : [newData.socket] } 
               }
