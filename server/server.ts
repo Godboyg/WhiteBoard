@@ -4,6 +4,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import cluster from "cluster";
 import { cpus } from "os";
+import { Socket } from "socket.io";
 
 const app = express();
 const PORT = 4000;
@@ -27,9 +28,19 @@ app.use(cors({
     origin: "https://white-board-client-eta.vercel.app"
 }));
 
-var sessions: Record<string , { members: string[]}> = {}
-const server = createServer(app);
-const io = new Server(server , {
+if(cluster.isPrimary){
+    const numCPUs = cpus().length;
+    for(let i=0 ; i < numCPUs ; i++) cluster.fork();
+    console.log(`Primary ${process.pid} is running, forking ${numCPUs} workers...`);
+    cluster.on("exit", (worker) => {
+     console.log(`Worker ${worker.process.pid} died, starting new one...`);
+     cluster.fork();
+    });
+} else {
+
+    var sessions: Record<string , { members: string[]}> = {}
+    const server = createServer(app);
+    const io = new Server(server , {
           cors : {
               origin: (origin, callback) => {
             if (!origin) return callback(null, true);
@@ -45,22 +56,19 @@ const io = new Server(server , {
           },
               methods: ["POST" , "GET"]
           }
-});
-
-if(cluster.isPrimary){
-    const numCPUs = cpus().length;
-    for(let i=0 ; i < numCPUs ; i++) cluster.fork();
-    console.log(`Primary ${process.pid} is running, forking ${numCPUs} workers...`);
-    cluster.on("exit", (worker) => {
-     console.log(`Worker ${worker.process.pid} died, starting new one...`);
-     cluster.fork();
     });
-} else {
 
-      io.on("connection",(socket) => {
+    const rateLimit = new Map<string, number>();
+
+      io.on("connection",(socket: Socket) => {
           console.log("socket connected",socket.id);
 
           socket.on("join-session" , (newData : any) => {
+            const now = Date.now();
+            const last = rateLimit.get(socket.id) || 0;
+            if (now - last < 1000) return;
+            rateLimit.set(socket.id, now);
+
             console.log("new user data",newData);
               if(!sessions[newData.roomId] || sessions[newData.roomId]?.members.length === 0){
                   sessions[newData.roomId] = { members : [newData.socket] } 
