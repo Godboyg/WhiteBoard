@@ -62,6 +62,7 @@ if(cluster.isPrimary){
           console.log("socket connected",socket.id);
 
           socket.on("join-session" , (newData : any) => {
+            console.log("new dtat", newData);
               if(!sessions[newData.roomId] || sessions[newData.roomId]?.members.length === 0){
                   sessions[newData.roomId] = { members : [newData.socket] } 
               }
